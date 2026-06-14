@@ -1,0 +1,1 @@
+# VUe-out-of-the-box-template
