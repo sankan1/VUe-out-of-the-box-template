@@ -1,0 +1,163 @@
+openapi: 3.0.3
+info:
+  title: Persons API
+  version: 1.0.0
+paths:
+  /user:
+    get:
+      tags: [user]
+      operationId: fetchUserInfo
+      summary: Fetches active user's information
+      responses:
+        '200':
+          description: User info
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserInfoOutputModal'
+  /persons/search:
+    post:
+      tags: [persons]
+      operationId: searchPersons
+      parameters:
+        - { name: page, in: query, schema: { type: integer } }
+        - { name: size, in: query, schema: { type: integer } }
+        - { name: sort, in: query, schema: { type: array, items: { type: string } } }
+      requestBody:
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/PersonSearchRequest' }
+      responses:
+        '200':
+          description: Page of persons
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/PersonsResponse' }
+  /persons/{id}:
+    get:
+      tags: [persons]
+      operationId: getPerson
+      parameters:
+        - { name: id, in: path, required: true, schema: { type: integer } }
+      responses:
+        '200':
+          description: A person
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Person' }
+    put:
+      tags: [persons]
+      operationId: updatePerson
+      parameters:
+        - { name: id, in: path, required: true, schema: { type: integer } }
+      requestBody:
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/Person' }
+      responses:
+        '200': { description: Updated }
+
+  /persons:
+    get:
+      tags: [ persons ]
+      operationId: getPersons
+      responses:
+        '200':
+          description: A person
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Persons' }
+  /persons/quick/search:
+    get:
+      tags: [quick-search]
+      operationId: quickSearch
+      parameters:
+        - { name: searchText, in: query, required: true, schema: { type: string, minLength: 2 } }
+        - { name: page, in: query, schema: { type: integer } }
+        - { name: size, in: query, schema: { type: integer } }
+        - { name: sort, in: query, schema: { type: array, items: { type: string } } }
+      responses:
+        '200':
+          description: Page of persons
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/PersonsResponse' }
+  /smart-id/init:
+    post:
+      tags: [ auth ]
+      operationId: smartIdInit
+      requestBody:
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/SmartIdInitRequest' }
+      responses:
+        '200':
+          description: Smart id init response
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/SmartIdInitResponse' }
+  /smart-id/complete:
+    post:
+      tags: [ auth ]
+      operationId: smartIdComplete
+      parameters:
+        - { name: reference, in: query, required: true, schema: { type: string } }
+      responses:
+        '200':
+          description: Smart id init response
+
+components:
+  schemas:
+    DefaultErrorResponse:
+      description: Default error
+      properties:
+        errorMessage:
+          type: string
+    UserInfoOutputModal:
+      type: object
+      required: [userId, ssn, firstName, lastName, roles]
+      properties:
+        userId: { type: integer }
+        ssn: { type: string }
+        email: { type: string }
+        firstName: { type: string }
+        lastName: { type: string }
+        roles: { type: array, items: { type: string } }
+        roleGroups:
+          type: array
+          items: { type: string, enum: [HEAD_USER, END_USER, ADMIN] }
+    Person:
+      type: object
+      required: [id, name]
+      properties:
+        id: { type: integer }
+        name: { type: string }
+        nickname: { type: string }
+        hobby: { type: string }
+    Persons:
+      type: array
+      items:
+        $ref: '#/components/schemas/Person'
+    PersonSearchRequest:
+      type: object
+      properties:
+        name: { type: string }
+        nickname: { type: string }
+        hobby: { type: string }
+        textSearch: { type: string }
+    PersonsResponse:
+      type: object
+      properties:
+        content: { type: array, items: { $ref: '#/components/schemas/Person' } }
+        totalSize: { type: integer }
+        totalPages: { type: integer }
+    SmartIdInitRequest:
+      type: object
+      required: [ identityCode ]
+      properties:
+        identityCode: { type: string, pattern: '^\d{11}$' }
+    SmartIdInitResponse:
+      type: object
+      properties:
+        reference: { type: string }
+        verificationCode: { type: string }

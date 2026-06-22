@@ -1,0 +1,7 @@
+{
+  "plugins": ["prettier-plugin-tailwindcss"],
+  "printWidth": 130,
+  "semi": false,
+  "singleQuote": true,
+  "vueIndentScriptAndStyle": true
+}

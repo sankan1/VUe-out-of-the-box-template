@@ -1,0 +1,19 @@
+{
+  "persons": {
+    "title": "Isikud",
+    "columns": {
+      "name": "Nimi",
+      "nickname": "Hüüdnimi",
+      "hobby": "Hobi"
+    },
+    "edit": {
+      "notAllowed": "Muutmiseks on vaja juhtkasutaja rolli."
+    }
+  },
+  "alert": {
+    "title": {
+      "error": "Viga",
+      "success": "Õnnestus"
+    }
+  }
+}

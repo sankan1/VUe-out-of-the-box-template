@@ -1,7 +1,56 @@
 import { defineConfig } from 'vite'
-import vue from '@vitejs/plugin-vue'
+import Vue from '@vitejs/plugin-vue'
+import vueDevTools from 'vite-plugin-vue-devtools'
+import { fileURLToPath, URL } from 'node:url'
 
-// https://vite.dev/config/
 export default defineConfig({
-  plugins: [vue()],
+  optimizeDeps: {
+    include: ['tailwind-config'],
+  },
+  plugins: [Vue(), vueDevTools()],
+  resolve: {
+    alias: {
+      '@': fileURLToPath(new URL('./src', import.meta.url)),
+      'tailwind-config': fileURLToPath(new URL('./tailwind.config.cjs', import.meta.url)),
+    },
+  },
+  server: {
+    port: 9000,
+    proxy: {
+      '/api': {
+        target: 'http://localhost:8080/api',
+        changeOrigin: true,
+        xfwd: true,
+        secure: false,
+        rewrite: (path) => path.replace(/^\/api/, ''),
+      },
+      '/ws/persons': {
+        target: 'http://localhost:8080',
+        ws: true,
+        changeOrigin: true,
+      },
+      '/unleash/frontend': {
+        target: 'http://localhost:4242',
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/unleash\/frontend/, '/api/frontend'),
+        configure: (proxy) => {
+          proxy.on('proxyReq', (proxyReq) => {
+            proxyReq.setHeader('Authorization', '*:development.unleash-insecure-frontend-api-token')
+          })
+        },
+      },
+    },
+  },
+  test: {
+    reporters: ['junit'],
+    setupFiles: ['tests/setup-hooks.ts'],
+    outputFile: {
+      junit: 'build/test-results/junit/report.xml',
+    },
+    environment: 'happy-dom',
+    coverage: {
+      reporter: ['lcov'],
+      reportsDirectory: 'build/test-results/coverage',
+    },
+  },
 })
