@@ -18,16 +18,22 @@ export default defineConfig({
     port: 9000,
     proxy: {
       '/api': {
-        target: 'http://localhost:8080/api',
+        target: 'http://127.0.0.1:8080',
         changeOrigin: true,
         xfwd: true,
         secure: false,
         rewrite: (path) => path.replace(/^\/api/, ''),
       },
       '/ws/persons': {
-        target: 'http://localhost:8080',
+        target: 'http://127.0.0.1:8080',
         ws: true,
         changeOrigin: true,
+      },
+      '/oauth': {
+        target: 'http://127.0.0.1:8080',
+        changeOrigin: true,
+        xfwd: true,
+        secure: false,
       },
       '/unleash/frontend': {
         target: 'http://localhost:4242',

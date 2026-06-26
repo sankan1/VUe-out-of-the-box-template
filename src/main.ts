@@ -7,6 +7,7 @@ import { configureAxios } from '@/config/axiosConfig'
 import { i18n } from '@/config/i18nConfig'
 import * as permissions from '@/directives/permissions'
 import { plugin as unleashPlugin } from '@unleash/proxy-client-vue'
+import { unleashClient } from '@/config/unleashConfig'
 
 configureAxios()
 
@@ -17,14 +18,7 @@ app.use(pinia)
 app.use(router)
 app.use(i18n)
 
-app.use(unleashPlugin, {
-    config: {
-        url: `${globalThis.location.origin}/unleash/frontend/`,
-        clientKey: 'proxy-handles-this',
-        appName: 'persons-frontend',
-        refreshInterval: 15,
-    },
-})
+app.use(unleashPlugin, { unleashClient })
 
 app.directive('visible-to-head-user-group', permissions.visibleToHeadUserGroup)
 app.directive('visible-to-end-user-group', permissions.visibleToEndUserGroup)

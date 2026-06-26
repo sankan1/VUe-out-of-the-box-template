@@ -6,7 +6,11 @@ const route = useRoute()
 
 const logout = () => {
   useAuthStore().user = undefined
-  window.location.href = '/api/logout'
+  const form = document.createElement('form')
+  form.method = 'POST'
+  form.action = '/api/logout'
+  document.body.appendChild(form)
+  form.submit()
 }
 </script>
 

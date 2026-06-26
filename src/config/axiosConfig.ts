@@ -1,5 +1,6 @@
 import axios from 'axios'
 import { redirectToLogin } from '@/router'
+import { isAuthRequired } from '@/config/unleashConfig'
 
 export function configureAxios() {
     axios.defaults.withCredentials = true
@@ -21,7 +22,7 @@ function redirectToLoginOnUnauthorized() {
     axios.interceptors.response.use(
         (response) => response,
         (error) => {
-            if (error?.response?.status === 401) {
+            if (isAuthRequired() && error?.response?.status === 401) {
                 redirectToLogin()
             }
             return Promise.reject(error)

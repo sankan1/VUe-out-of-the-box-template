@@ -8,6 +8,8 @@ import _ from 'lodash'
 import { useAuthStore } from '@/stores/auth.store'
 import type { UserInfoOutputModal } from '@/generated/api/model'
 import { fetchUserInfo } from '@/generated/api/user/user'
+import { isAuthRequired, unleashClient } from '@/config/unleashConfig'
+import { FeatureFlag } from '@/constants/feature-flags'
 
 const router = createRouter({
     history: createWebHistory(),
@@ -77,7 +79,7 @@ router.beforeEach((to, from, next) => {
     const userInfo = authStore.user
     const allowAnonymous = to.matched.some((record) => record.meta.allowAnonymous)
 
-    if (!allowAnonymous && _.isEmpty(userInfo)) {
+    if (isAuthRequired() && !allowAnonymous && _.isEmpty(userInfo)) {
         fetchUserInfo()
             .then((userData) => {
                 authStore.user = userData?.data ?? ({} as UserInfoOutputModal)
@@ -121,7 +123,17 @@ export const redirectToLogin = (pathAfterLogin?: string) => {
     }
     redirectingToLogin = true
     sessionStorage.clear()
-    globalThis.location.href = '/api/oauth/login'
+
+    if (unleashClient.isEnabled(FeatureFlag.OIDC_AUTH)) {
+        globalThis.location.href = '/oauth/login/oidc'
+        return
+    }
+    if (unleashClient.isEnabled(FeatureFlag.SMART_ID_AUTH)) {
+        redirectingToLogin = false
+        router.push('/login')
+        return
+    }
+    redirectingToLogin = false
 }
 
 export function getPreviousRoute() {
