@@ -5,11 +5,9 @@
  * OpenAPI spec version: 1.0.0
  */
 
-export interface Person {
-  id: number
+export interface PersonCreateRequest {
   name: string
   nickname?: string
-  hobby?: string
-  identityCode?: string
+  identityCode: string
   age?: number
 }

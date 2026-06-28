@@ -5,14 +5,13 @@
  * OpenAPI spec version: 1.0.0
  */
 
-export interface PersonSearchRequest {
-  name?: string
-  nickname?: string
-  hobby?: string
-  identityCode?: string
+export interface InsuranceSearchRequest {
+  insurerName?: string
+  plan?: string
+  personId?: number
+  personName?: string
+  carId?: number
   carMark?: string
   carModel?: string
-  issuerFirmName?: string
-  insurancePlan?: string
   textSearch?: string
 }

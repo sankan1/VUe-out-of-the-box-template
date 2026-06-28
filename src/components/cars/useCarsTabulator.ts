@@ -1,28 +1,33 @@
 import { onMounted, onUnmounted, ref, type Ref } from 'vue'
 import { TabulatorFull as Tabulator, type ColumnDefinition } from 'tabulator-tables'
 import type { Router } from 'vue-router'
-import { usePersonsStore } from '@/stores/persons.store'
+import { useCarsStore } from '@/stores/cars.store'
 
-export function usePersonsTabulator(container: Ref<HTMLElement | null>, router: Router) {
-    const personsStore = usePersonsStore()
+export function useCarsTabulator(container: Ref<HTMLElement | null>, router: Router) {
+    const carsStore = useCarsStore()
     const tabulator = ref<Tabulator>()
 
     const columns: ColumnDefinition[] = [
-        { title: 'Name', field: 'name', sorter: 'string' },
-        { title: 'Nickname', field: 'nickname', sorter: 'string' },
-        { title: 'Hobby', field: 'hobby', sorter: 'string' },
+        { title: 'Mark', field: 'mark', sorter: 'string' },
+        { title: 'Model', field: 'model', sorter: 'string' },
+        { title: 'Owner', field: 'ownerName', sorter: 'string' },
+        { title: 'Issuer firm', field: 'issuerFirmName', sorter: 'string' },
     ]
 
-    async function fetchTableData(_url: string, _config: unknown, params: { page: number; size: number; sort: { field: string; dir: string }[] }) {
+    async function fetchTableData(
+        _url: string,
+        _config: unknown,
+        params: { page: number; size: number; sort: { field: string; dir: string }[] },
+    ) {
         const sorter = params.sort[0]
         if (sorter) {
-            personsStore.selectedSort = { field: sorter.field, dir: sorter.dir as 'asc' | 'desc' }
+            carsStore.selectedSort = { field: sorter.field, dir: sorter.dir as 'asc' | 'desc' }
         }
-        personsStore.selectedPageSize = params.size
-        await personsStore.fetchPersons(params.page - 1)
+        carsStore.selectedPageSize = params.size
+        await carsStore.fetchCars(params.page - 1)
         return {
-            data: personsStore.persons,
-            last_page: personsStore.totalPages,
+            data: carsStore.cars,
+            last_page: carsStore.totalPages,
         }
     }
 
@@ -37,8 +42,8 @@ export function usePersonsTabulator(container: Ref<HTMLElement | null>, router: 
             paginationMode: 'remote',
             sortMode: 'remote',
             filterMode: 'remote',
-            paginationSize: personsStore.selectedPageSize,
-            ajaxURL: '/persons/search',
+            paginationSize: carsStore.selectedPageSize,
+            ajaxURL: '/cars/search',
             ajaxRequestFunc: fetchTableData as never,
         })
 
@@ -47,7 +52,7 @@ export function usePersonsTabulator(container: Ref<HTMLElement | null>, router: 
             if (mouseEvent.ctrlKey || mouseEvent.metaKey) {
                 return
             }
-            router.push({ name: 'Person', params: { id: row.getData().id } })
+            router.push({ name: 'Car', params: { id: row.getData().id } })
         })
     }
 

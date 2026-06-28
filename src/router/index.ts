@@ -37,6 +37,11 @@ const router = createRouter({
                     component: () => import('@/pages/Persons.vue'),
                 },
                 {
+                    path: '/person/new',
+                    name: 'PersonCreate',
+                    component: () => import('@/pages/PersonCreate.vue'),
+                },
+                {
                     path: '/person/:id',
                     name: 'Person',
                     component: () => import('@/pages/PersonDetail.vue'),
@@ -46,6 +51,46 @@ const router = createRouter({
                     name: 'PersonEdit',
                     component: () => import('@/pages/PersonDetail.vue'),
                     props: { isEdit: true },
+                },
+                {
+                    path: '/cars',
+                    name: 'Cars',
+                    component: () => import('@/pages/Cars.vue'),
+                },
+                {
+                    path: '/car/new',
+                    name: 'CarCreate',
+                    component: () => import('@/pages/CarCreate.vue'),
+                },
+                {
+                    path: '/car/:id',
+                    name: 'Car',
+                    component: () => import('@/pages/CarDetail.vue'),
+                },
+                {
+                    path: '/insurances',
+                    name: 'Insurances',
+                    component: () => import('@/pages/Insurances.vue'),
+                },
+                {
+                    path: '/insurance/new',
+                    name: 'InsuranceCreate',
+                    component: () => import('@/pages/InsuranceCreate.vue'),
+                },
+                {
+                    path: '/insurance/:id',
+                    name: 'Insurance',
+                    component: () => import('@/pages/InsuranceDetail.vue'),
+                },
+                {
+                    path: '/issuer-firms',
+                    name: 'IssuerFirms',
+                    component: () => import('@/pages/IssuerFirms.vue'),
+                },
+                {
+                    path: '/expiring-soon',
+                    name: 'ExpiringSoon',
+                    component: () => import('@/pages/ExpiringSoon.vue'),
                 },
                 {
                     path: '/search',

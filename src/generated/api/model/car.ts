@@ -5,11 +5,11 @@
  * OpenAPI spec version: 1.0.0
  */
 
-export interface Person {
+export interface Car {
   id: number
-  name: string
-  nickname?: string
-  hobby?: string
-  identityCode?: string
-  age?: number
+  ownerId?: number
+  ownerName?: string
+  mark: string
+  model: string
+  issuerFirmName?: string
 }

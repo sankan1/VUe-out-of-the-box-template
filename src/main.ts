@@ -11,17 +11,22 @@ import { unleashClient } from '@/config/unleashConfig'
 
 configureAxios()
 
-const app = createApp(App)
-const pinia = createPinia()
+unleashClient
+    .start()
+    .catch((error: unknown) => console.error('Unleash: failed to fetch initial feature toggles', error))
+    .finally(() => {
+        const app = createApp(App)
+        const pinia = createPinia()
 
-app.use(pinia)
-app.use(router)
-app.use(i18n)
+        app.use(pinia)
+        app.use(router)
+        app.use(i18n)
 
-app.use(unleashPlugin, { unleashClient })
+        app.use(unleashPlugin, { unleashClient, startClient: false })
 
-app.directive('visible-to-head-user-group', permissions.visibleToHeadUserGroup)
-app.directive('visible-to-end-user-group', permissions.visibleToEndUserGroup)
-app.directive('visible-to-admin-group', permissions.visibleToAdminGroup)
+        app.directive('visible-to-head-user-group', permissions.visibleToHeadUserGroup)
+        app.directive('visible-to-end-user-group', permissions.visibleToEndUserGroup)
+        app.directive('visible-to-admin-group', permissions.visibleToAdminGroup)
 
-app.mount('#app')
+        app.mount('#app')
+    })

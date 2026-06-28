@@ -7,7 +7,7 @@
 import * as axios from 'axios'
 import type { AxiosRequestConfig, AxiosResponse } from 'axios'
 
-import type { Person, PersonSearchRequest, Persons, PersonsResponse, SearchPersonsParams } from '.././model'
+import type { Person, PersonCreateRequest, PersonSearchRequest, Persons, PersonsResponse, SearchPersonsParams } from '.././model'
 
 export const searchPersons = <TData = AxiosResponse<PersonsResponse>>(
   personSearchRequest: PersonSearchRequest,
@@ -32,7 +32,14 @@ export const updatePerson = <TData = AxiosResponse<void>>(
 export const getPersons = <TData = AxiosResponse<Persons>>(options?: AxiosRequestConfig): Promise<TData> => {
   return axios.default.get(`/persons`, options)
 }
+export const createPerson = <TData = AxiosResponse<Person>>(
+  personCreateRequest: PersonCreateRequest,
+  options?: AxiosRequestConfig,
+): Promise<TData> => {
+  return axios.default.post(`/persons`, personCreateRequest, options)
+}
 export type SearchPersonsResult = AxiosResponse<PersonsResponse>
 export type GetPersonResult = AxiosResponse<Person>
 export type UpdatePersonResult = AxiosResponse<void>
 export type GetPersonsResult = AxiosResponse<Persons>
+export type CreatePersonResult = AxiosResponse<Person>
